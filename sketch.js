@@ -1,4 +1,3 @@
-//Game States
 var PLAY=1;
 var END=0;
 var gameState=1;
@@ -8,7 +7,6 @@ var knifeImage , fruit1, fruit2 ,fruit3,fruit4, monsterImage, gameOverImage;
 var gameOverSound ,knifeSwoosh;
 
 function preload(){
-  
   knifeImage = loadImage("knife.png");
   monsterImage = loadAnimation("alien1.png","alien2.png")
   fruit1 = loadImage("fruit1.png");
@@ -21,23 +19,15 @@ function preload(){
   knifeSwooshSound = loadSound("knifeSwoosh.mp3")
 }
 
-
-
 function setup() {
+  score=0;
   createCanvas(600, 600);
   
-  //creating sword
-   knife=createSprite(40,200,20,20);
-   knife.addImage(knifeImage);
-   knife.scale=0.7
-  
-  
-  
-  //set collider for sword
-  knife.setCollider("rectangle",0,0,40,40);
+  knife=createSprite(40,200,20,20);
+  knife.addImage(knifeImage);
+  knife.scale=0.7
+  knife.setCollider("rectangle",0,1,40,60);
 
-  // Score variables and Groups
-  score=0;
   fruitGroup=createGroup();
   monsterGroup=createGroup();
   
@@ -47,35 +37,21 @@ function draw() {
   background("lightblue");
   
   if(gameState===PLAY){
-    
-    //Call fruits and Monster function
     fruits();
     Monster();
     
-    // Move sword with mouse
     knife.y=World.mouseY;
     knife.x=World.mouseX;
   
-    // Increase score if sword touching fruit
     if(fruitGroup.isTouching(knife)){
       fruitGroup.destroyEach();
       
       knifeSwooshSound.play();
-      // knifeSwooshSound.play;
-      // knifeSwooshSound();
-      // knifeSwooshSoundplay();
-
-
-      // score=score;
-      // score=+2;
-      // score=2;
       score=score+2;
 
     }
     else
-    {
-      // Go to end state if sword touching enemy
-      if(monsterGroup.isTouching(knife)){
+    { if(monsterGroup.isTouching(knife)){
         gameState=END;
         //gameover sound
         gameOverSound.play()
@@ -92,14 +68,12 @@ function draw() {
         knife.y=300;
       }
     }
-  }
-  
+    }
   drawSprites();
   //Display score
   textSize(25);
   text("Score : "+ score,250,50);
 }
-
 
 function Monster(){
   if(World.frameCount%200===0){
@@ -117,31 +91,21 @@ function fruits(){
   if(World.frameCount%80===0){
     fruit=createSprite(400,200,20,20);
     fruit.x = 0    
-  //Increase the velocity of fruit after score 4 
-
-      fruit.velocityX= (7+(score/4));
-      // fruit.velocityY= (7+(score));
-      // fruit.velocity= (7+(score/4));
-      // fruit.velocityX= (7);
-     
+    fruit.velocityX= (7+(score/4));
     fruit.scale=0.2;
-     //fruit.debug=true;
-     r=Math.round(random(1,4));
-    if (r == 1) {
+    fruit.y=Math.round(random(50,550));
+    fruit.setLifetime=100;
+  
+     f = Math.round(random(1,12));
+    if (f == 1 || f == 5 || f == 9) {
       fruit.addImage(fruit1);
-    } else if (r == 2) {
+    } else if (f == 2 || f == 6 || f == 10) {
       fruit.addImage(fruit2);
-    } else if (r == 3) {
+    } else if (f == 3 || f == 7 || f == 11) {
       fruit.addImage(fruit3);
-    } else {
+    } else if (f == 4 || f == 8 || f == 12){
       fruit.addImage(fruit4);
     }
-    
-    fruit.y=Math.round(random(50,550));
-   
-    
-    fruit.setLifetime=100;
-    
     fruitGroup.add(fruit);
   }
 }
